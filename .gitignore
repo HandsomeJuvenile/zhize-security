@@ -1,0 +1,5 @@
+# Project exclude paths
+/zhize-security-app/target/
+/zhize-security-browser/target/
+/zhize-security-core/target/
+/zhize-security-demo/target/
