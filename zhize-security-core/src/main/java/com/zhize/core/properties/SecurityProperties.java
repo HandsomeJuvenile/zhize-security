@@ -1,21 +1,20 @@
 package com.zhize.core.properties;
 
-
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-
 @ConfigurationProperties(prefix = "zhize.security")
 @Component
+@Data
 public class SecurityProperties {
 
     private BrowserProperties browser = new BrowserProperties();
 
-    public BrowserProperties getBrowser() {
-        return browser;
-    }
+    private ValidateCodeProperties code = new ValidateCodeProperties();
 
-    public void setBrowser(BrowserProperties browser) {
-        this.browser = browser;
+
+    public ImageCodeProperties getImageCodeProperties(){
+        return code.getImage();
     }
 }

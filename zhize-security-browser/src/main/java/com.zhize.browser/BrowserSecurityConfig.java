@@ -2,16 +2,19 @@ package com.zhize.browser;
 
 import com.zhize.browser.authentication.ZhizeAuthenticationSuccessHandler;
 import com.zhize.core.properties.SecurityProperties;
+import com.zhize.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * 配置Spring Security
@@ -32,6 +35,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     AuthenticationSuccessHandler zhizeAuthenticationSuccessHandler;
     @Autowired
     AuthenticationFailureHandler zhizeAuthenticationFailureHandler;
+    @Autowired
+    ValidateCodeFilter validateCodeFilter;
 
     /**
      * 设置表单登录然后拦截所有请求并认证
@@ -40,7 +45,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
+        validateCodeFilter.setAuthenticationFailureHandler(zhizeAuthenticationFailureHandler);
+        http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin()
                 .loginPage("/authentication/require")
                 .loginProcessingUrl("/authentication/form")
                 .successHandler(zhizeAuthenticationSuccessHandler)

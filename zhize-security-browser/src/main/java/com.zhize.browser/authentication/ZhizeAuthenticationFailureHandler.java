@@ -34,7 +34,7 @@ public class ZhizeAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
         if (LoginResponseType.JSON.equals(loginResponseType)) {
             httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             httpServletResponse.setContentType("application/json;charset=UTF-8");
-            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(exception));
+            httpServletResponse.getWriter().write(objectMapper.writeValueAsString(exception.getMessage()));
         }else {
             super.onAuthenticationFailure(httpServletRequest,httpServletResponse,exception);
         }

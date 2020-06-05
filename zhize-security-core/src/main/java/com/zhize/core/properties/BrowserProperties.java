@@ -3,7 +3,9 @@ package com.zhize.core.properties;
 public class BrowserProperties {
 
     private String loginPage = "/zhize-sigIn.html";
+
     private LoginResponseType loginType  = LoginResponseType.JSON;
+
     public String getLoginPage() {
         return loginPage;
     }
