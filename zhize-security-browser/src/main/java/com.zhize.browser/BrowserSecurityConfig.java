@@ -1,6 +1,5 @@
 package com.zhize.browser;
 
-import com.zhize.browser.authentication.ZhizeAuthenticationSuccessHandler;
 import com.zhize.core.properties.SecurityProperties;
 import com.zhize.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
+
 
 /**
  * 配置Spring Security
@@ -26,17 +30,16 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private SecurityProperties securityProperties;
 
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
     @Autowired
     AuthenticationSuccessHandler zhizeAuthenticationSuccessHandler;
     @Autowired
     AuthenticationFailureHandler zhizeAuthenticationFailureHandler;
     @Autowired
     ValidateCodeFilter validateCodeFilter;
+    @Autowired
+    DataSource dataSource;
+    @Autowired
+    UserDetailsService userDetailsService;
 
     /**
      * 设置表单登录然后拦截所有请求并认证
@@ -48,20 +51,46 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         validateCodeFilter.setAuthenticationFailureHandler(zhizeAuthenticationFailureHandler);
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
-                .loginPage("/authentication/require")
-                .loginProcessingUrl("/authentication/form")
-                .successHandler(zhizeAuthenticationSuccessHandler)
-                .failureHandler(zhizeAuthenticationFailureHandler)
+                    .loginPage("/authentication/require")
+                    .loginProcessingUrl("/authentication/form")
+                    .successHandler(zhizeAuthenticationSuccessHandler)
+                    .failureHandler(zhizeAuthenticationFailureHandler)
+                    .and()
+                .rememberMe()
+                    .tokenRepository(persistentTokenRepository())
+                    .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+                    .userDetailsService(userDetailsService)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/authentication/require",
                                                             "/authentication/form",
-                                                            "/code/image",
+                                                            "/code/image","/code/sms",
                         securityProperties.getBrowser().getLoginPage()).permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .csrf().disable();
+    }
+
+    /**
+     * 密码加密
+     * @return
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * 记住我
+     * @return
+     */
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository(){
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        //tokenRepository.setCreateTableOnStartup(true);
+        return tokenRepository;
     }
 
 
