@@ -13,7 +13,6 @@ public class SecurityProperties {
 
     private ValidateCodeProperties code = new ValidateCodeProperties();
 
-
     public ImageCodeProperties getImageCodeProperties(){
         return code.getImage();
     }
