@@ -3,7 +3,6 @@ package com.zhize.core.validate.code.image;
 import com.zhize.core.properties.SecurityProperties;
 import com.zhize.core.validate.code.ImageCode;
 import com.zhize.core.validate.code.ValidateCodeGenerator;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
