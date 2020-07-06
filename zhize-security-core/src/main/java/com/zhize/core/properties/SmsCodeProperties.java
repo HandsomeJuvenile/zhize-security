@@ -6,7 +6,9 @@ import lombok.Data;
 public class SmsCodeProperties {
 
     private int length = 6;
+
     private int expire = 60;
-    private String urls; // 需要验证码的请求
+
+    private String urls = ""; // 需要验证码的请求
 
 }

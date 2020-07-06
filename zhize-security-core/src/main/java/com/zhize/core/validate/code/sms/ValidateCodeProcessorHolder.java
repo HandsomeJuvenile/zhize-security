@@ -2,6 +2,7 @@ package com.zhize.core.validate.code.sms;
 
 import com.zhize.core.validate.code.ValidateCodeProcessor;
 import com.zhize.core.validate.code.ValidateCodeException;
+import com.zhize.core.validate.code.ValidateCodeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,11 @@ public class ValidateCodeProcessorHolder {
 
     @Autowired
     private Map<String,ValidateCodeProcessor> validateCodeProcessors;
+
+    public ValidateCodeProcessor findValidateCodeProcessor(ValidateCodeType type) {
+        return findValidateCodeProcessor(type.toString().toLowerCase());
+    }
+
 
     public ValidateCodeProcessor findValidateCodeProcessor(String type){
         String name = type.toLowerCase() + ValidateCodeProcessor.class.getSimpleName();

@@ -35,4 +35,5 @@ public class MyUserDetailService implements UserDetailsService {
                 true, // 判断账号是否被锁住
                 AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
+
 }

@@ -1,28 +1,18 @@
 package com.zhize.core.validate.code;
 
-import com.zhize.core.properties.ImageCodeProperties;
 import com.zhize.core.properties.SecurityConstants;
-import com.zhize.core.properties.SecurityProperties;
 import com.zhize.core.validate.code.sms.SmsCodeSender;
 import com.zhize.core.validate.code.sms.ValidateCodeProcessorHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
-import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Random;
 
 @RestController
 public class ValidateCodeController {
@@ -30,6 +20,7 @@ public class ValidateCodeController {
     private SessionStrategy sessionStrategy = new HttpSessionSessionStrategy();
 
     public static final String SESSION_KEY = "SESSION_KEY_IMAGE_CODE";
+    public static final String SMS_SESSION_KEY = "SESSION_KEY_SMS_CODE";
 
     @Autowired
     ValidateCodeGenerator imageValidateCodeGenerator;
@@ -42,7 +33,6 @@ public class ValidateCodeController {
 
     /**
      * 创建验证码，根据验证码类型不同，调用不同的 {@link ValidateCodeProcessor}接口实现
-     *
      * @param request
      * @param response
      * @param type
@@ -80,15 +70,5 @@ public class ValidateCodeController {
 //        defaultSmsCodeSender.send(ServletRequestUtils.getRequiredStringParameter(request,"mobile"),
 //                smsCode.getCode());
 //    }
-
-    private ValidateCode createSmsCode(HttpServletRequest request) {
-        return smsValidateCodeGenerator.generate(new ServletWebRequest(request));
-    }
-
-
-    private ValidateCode createImageCode(HttpServletRequest request) {
-        return imageValidateCodeGenerator.generate(new ServletWebRequest(request));
-    }
-
 
 }

@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public interface ValidateCodeProcessor {
 
-    String SESSION_KEY_PREFIX = "SESSION_KEY_FOR_CODE_";
+    String SESSION_KEY_PREFIX = "SESSION_KEY_FORM_CODE_";
 
     /**
      * 创建验证码
