@@ -1,11 +1,16 @@
 package com.zhize.core.properties;
 
+import lombok.Data;
+
+@Data
 public class BrowserProperties {
 
     private String loginPage = "/zhize-sigIn.html";
 
     private LoginResponseType loginType  = LoginResponseType.JSON;
     private int rememberMeSeconds = 3600;
+
+    private SessionProperties session = new SessionProperties();
 
     public String getLoginPage() {
         return loginPage;
@@ -30,4 +35,7 @@ public class BrowserProperties {
     public void setRememberMeSeconds(int rememberMeSeconds) {
         this.rememberMeSeconds = rememberMeSeconds;
     }
+
+
+
 }
